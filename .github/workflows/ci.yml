@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
 
-# Mirrors the main codediff repository's posture: formatting, linting and tests all gate, and each
+# Mirrors the main omnidiff repository's posture: formatting, linting and tests all gate, and each
 # is its own job so a red badge says which one broke without opening the log.
 jobs:
   stylua:
@@ -51,8 +51,8 @@ jobs:
       # actual buffers and extmarks, and this needs no plugin manager or test framework.
       - run: nvim -l tests/run.lua
 
-  # Fails if the generated helptags don't build, which is the one way doc/codediff.txt can be
-  # broken without anybody noticing: `:help codediff` silently finds nothing.
+  # Fails if the generated helptags don't build, which is the one way doc/omnidiff.txt can be
+  # broken without anybody noticing: `:help omnidiff` silently finds nothing.
   helptags:
     name: helptags
     runs-on: ubuntu-latest

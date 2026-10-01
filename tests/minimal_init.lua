@@ -1,4 +1,4 @@
---  This file is part of the CodeDiff code diffing tool.
+--  This file is part of the OmniDiff code diffing tool.
 --
 --  Copyright (C) 2026 Marko Ivankovic
 --
@@ -15,6 +15,6 @@
 --  You should have received a copy of the GNU Affero General Public License
 --  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
--- Puts this checkout (not whatever codediff.nvim the machine has installed) at the front of the
+-- Puts this checkout (not whatever omnidiff.nvim the machine has installed) at the front of the
 -- runtimepath, so `nvim -l tests/run.lua` tests the working tree.
 vim.opt.runtimepath:prepend(vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h"))
