@@ -1,5 +1,5 @@
 # Matches .stylua.toml (2-space Lua) and keeps every other file type consistent with the main
-# codediff repository.
+# omnidiff repository.
 root = true
 
 [*]

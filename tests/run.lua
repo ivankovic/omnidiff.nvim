@@ -1,4 +1,4 @@
---  This file is part of the CodeDiff code diffing tool.
+--  This file is part of the OmniDiff code diffing tool.
 --
 --  Copyright (C) 2026 Marko Ivankovic
 --
@@ -46,7 +46,7 @@ local function assert_eq(actual, expected, what)
   end
 end
 
-local codediff = require("codediff")
+local omnidiff = require("omnidiff")
 
 ---A scratch buffer holding `lines`, for painting into.
 local function buffer_with(lines)
@@ -57,7 +57,7 @@ end
 
 ---Every extmark this plugin owns in `bufnr`, as `{ row, col, end_row, end_col, hl_group }`.
 local function marks_in(bufnr)
-  local raw = vim.api.nvim_buf_get_extmarks(bufnr, codediff.namespace, 0, -1, { details = true })
+  local raw = vim.api.nvim_buf_get_extmarks(bufnr, omnidiff.namespace, 0, -1, { details = true })
   local out = {}
   for _, mark in ipairs(raw) do
     -- {id, row, col, details}
@@ -69,44 +69,44 @@ local function marks_in(bufnr)
   return out
 end
 
-print("codediff.nvim")
+print("omnidiff.nvim")
 
-test("setup() defaults to looking codediff up on $PATH", function()
-  codediff.setup()
-  assert_eq(codediff.config.bin, "codediff", "config.bin")
+test("setup() defaults to looking omnidiff up on $PATH", function()
+  omnidiff.setup()
+  assert_eq(omnidiff.config.bin, "omnidiff", "config.bin")
 end)
 
 test("setup() overrides only what it is given", function()
-  codediff.setup({ bin = "/opt/codediff" })
-  assert_eq(codediff.config.bin, "/opt/codediff", "config.bin")
-  codediff.setup() -- restore for the tests below
+  omnidiff.setup({ bin = "/opt/omnidiff" })
+  assert_eq(omnidiff.config.bin, "/opt/omnidiff", "config.bin")
+  omnidiff.setup() -- restore for the tests below
 end)
 
 test("each operation paints its own highlight group", function()
   local bufnr = buffer_with({ "alpha", "beta", "gamma", "delta" })
-  codediff.render_hunks(bufnr, {
+  omnidiff.render_hunks(bufnr, {
     { operation = "insert", range = { start_row = 0, start_column = 0, end_row = 0, end_column = 5 } },
     { operation = "delete", range = { start_row = 1, start_column = 0, end_row = 1, end_column = 4 } },
     { operation = "update", range = { start_row = 2, start_column = 0, end_row = 2, end_column = 5 } },
     { operation = "move", range = { start_row = 3, start_column = 0, end_row = 3, end_column = 5 } },
   })
   assert_eq(marks_in(bufnr), {
-    { 0, 0, 0, 5, "CodeDiffInsert" },
-    { 1, 0, 1, 4, "CodeDiffDelete" },
-    { 2, 0, 2, 5, "CodeDiffUpdate" },
-    { 3, 0, 3, 5, "CodeDiffMove" },
+    { 0, 0, 0, 5, "OmniDiffInsert" },
+    { 1, 0, 1, 4, "OmniDiffDelete" },
+    { 2, 0, 2, 5, "OmniDiffUpdate" },
+    { 3, 0, 3, 5, "OmniDiffMove" },
   }, "extmarks")
 end)
 
 test("an unknown operation is ignored rather than crashing", function()
   local bufnr = buffer_with({ "alpha" })
-  codediff.render_hunks(bufnr, {
+  omnidiff.render_hunks(bufnr, {
     { operation = "teleport", range = { start_row = 0, start_column = 0, end_row = 0, end_column = 5 } },
   })
   assert_eq(marks_in(bufnr), {}, "extmarks")
 end)
 
--- The property that makes this integration correct at all: codediff reports **byte** columns and
+-- The property that makes this integration correct at all: omnidiff reports **byte** columns and
 -- nvim_buf_set_extmark takes byte columns, so a line with multi-byte characters needs no
 -- conversion. If either side ever changed convention this is the test that would catch it.
 test("byte columns pass through untranslated on a non-ASCII line", function()
@@ -114,23 +114,26 @@ test("byte columns pass through untranslated on a non-ASCII line", function()
   local bufnr = buffer_with({ line })
   local byte_col = string.find(line, "bbb", 1, true) - 1 -- Lua is 1-indexed; extmarks are 0-indexed
   assert_eq(byte_col, 15, "byte offset of bbb")
-  codediff.render_hunks(bufnr, {
-    { operation = "update", range = { start_row = 0, start_column = byte_col, end_row = 0, end_column = byte_col + 3 } },
+  omnidiff.render_hunks(bufnr, {
+    {
+      operation = "update",
+      range = { start_row = 0, start_column = byte_col, end_row = 0, end_column = byte_col + 3 },
+    },
   })
-  assert_eq(marks_in(bufnr), { { 0, 15, 0, 18, "CodeDiffUpdate" } }, "extmarks")
+  assert_eq(marks_in(bufnr), { { 0, 15, 0, 18, "OmniDiffUpdate" } }, "extmarks")
 end)
 
 test("re-rendering replaces the previous marks instead of stacking them", function()
   local bufnr = buffer_with({ "alpha", "beta" })
   local hunk = { operation = "insert", range = { start_row = 0, start_column = 0, end_row = 0, end_column = 5 } }
-  codediff.render_hunks(bufnr, { hunk })
-  codediff.render_hunks(bufnr, { hunk })
+  omnidiff.render_hunks(bufnr, { hunk })
+  omnidiff.render_hunks(bufnr, { hunk })
   assert_eq(#marks_in(bufnr), 1, "extmark count after a second render")
 end)
 
 test("a move hunk also gets its jump-target annotation", function()
   local bufnr = buffer_with({ "alpha", "beta" })
-  codediff.render_hunks(bufnr, {
+  omnidiff.render_hunks(bufnr, {
     {
       operation = "move",
       range = { start_row = 0, start_column = 0, end_row = 0, end_column = 5 },
@@ -139,7 +142,7 @@ test("a move hunk also gets its jump-target annotation", function()
   })
   -- Indexing the tuple directly rather than unpack(): an extmark row is {id, row, col, details}
   -- and only `details` is wanted here.
-  local all = vim.api.nvim_buf_get_extmarks(bufnr, codediff.namespace, 0, -1, { details = true })
+  local all = vim.api.nvim_buf_get_extmarks(bufnr, omnidiff.namespace, 0, -1, { details = true })
   local annotations = {}
   for _, mark in ipairs(all) do
     local details = mark[4]

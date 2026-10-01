@@ -1,4 +1,4 @@
---  This file is part of the CodeDiff code diffing tool.
+--  This file is part of the OmniDiff code diffing tool.
 --
 --  Copyright (C) 2026 Marko Ivankovic
 --
@@ -15,26 +15,26 @@
 --  You should have received a copy of the GNU Affero General Public License
 --  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-if vim.g.loaded_codediff then
+if vim.g.loaded_omnidiff then
   return
 end
-vim.g.loaded_codediff = true
+vim.g.loaded_omnidiff = true
 
-vim.api.nvim_create_user_command("CodeDiff", function(opts)
+vim.api.nvim_create_user_command("OmniDiff", function(opts)
   local args = opts.fargs
   if #args ~= 2 then
-    vim.notify("CodeDiff needs exactly two file arguments: :CodeDiff {before} {after}", vim.log.levels.ERROR)
+    vim.notify("OmniDiff needs exactly two file arguments: :OmniDiff {before} {after}", vim.log.levels.ERROR)
     return
   end
-  require("codediff").open_diff(args[1], args[2])
+  require("omnidiff").open_diff(args[1], args[2])
 end, {
   nargs = "+",
   complete = "file",
-  desc = "Diff two files with codediff",
+  desc = "Diff two files with omnidiff",
 })
 
-vim.api.nvim_create_user_command("CodeDiffThis", function()
-  require("codediff").diff_this()
+vim.api.nvim_create_user_command("OmniDiffThis", function()
+  require("omnidiff").diff_this()
 end, {
-  desc = "Diff the current buffer's unsaved changes against the on-disk file with codediff",
+  desc = "Diff the current buffer's unsaved changes against the on-disk file with omnidiff",
 })
