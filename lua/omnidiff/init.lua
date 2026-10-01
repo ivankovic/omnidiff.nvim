@@ -106,10 +106,7 @@ end
 local function run_diff(before, after, on_done)
   local bin = M.config.bin
   if vim.fn.executable(bin) == 0 then
-    vim.notify(
-      ("omnidiff.nvim: `%s` not found on $PATH - see :checkhealth omnidiff"):format(bin),
-      vim.log.levels.ERROR
-    )
+    vim.notify(("omnidiff.nvim: `%s` not found on $PATH - see :checkhealth omnidiff"):format(bin), vim.log.levels.ERROR)
     return
   end
 

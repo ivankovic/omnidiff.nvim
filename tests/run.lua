@@ -115,7 +115,10 @@ test("byte columns pass through untranslated on a non-ASCII line", function()
   local byte_col = string.find(line, "bbb", 1, true) - 1 -- Lua is 1-indexed; extmarks are 0-indexed
   assert_eq(byte_col, 15, "byte offset of bbb")
   omnidiff.render_hunks(bufnr, {
-    { operation = "update", range = { start_row = 0, start_column = byte_col, end_row = 0, end_column = byte_col + 3 } },
+    {
+      operation = "update",
+      range = { start_row = 0, start_column = byte_col, end_row = 0, end_column = byte_col + 3 },
+    },
   })
   assert_eq(marks_in(bufnr), { { 0, 15, 0, 18, "OmniDiffUpdate" } }, "extmarks")
 end)
