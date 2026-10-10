@@ -1,7 +1,7 @@
 # omnidiff.nvim
 
 [![CI](https://github.com/ivankovic/omnidiff.nvim/actions/workflows/ci.yml/badge.svg)](https://github.com/ivankovic/omnidiff.nvim/actions/workflows/ci.yml)
-[![License: AGPL v3+](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0--only-blue)](LICENSE)
 
 Syntax-aware diffing in Neovim, backed by the [omnidiff](https://github.com/ivankovic/omnidiff)
 CLI. Renders `omnidiff --mode json`'s full-range-precision hunk data directly onto Neovim buffers
@@ -93,5 +93,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). In short: `stylua .`, `luacheck lua plug
 
 ## License
 
-AGPL-3.0-or-later - see [LICENSE](LICENSE), the same licence as
+AGPL-3.0-only - see [LICENSE](LICENSE), the same licence as
 [omnidiff](https://github.com/ivankovic/omnidiff) itself.
